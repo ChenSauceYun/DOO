@@ -1,0 +1,1131 @@
+# DOO项目架构与功能文档
+
+## 一、项目概述
+
+**DOO** 是一个基于uni-app开发的短视频社交应用，包含用户端和管理后台两个系统。
+
+---
+
+## 二、技术栈
+
+### 前端技术栈
+- **框架**: uni-app (Vue.js)
+- **UI框架**: 自定义组件 + SCSS
+- **状态管理**: Vuex (可选)
+- **网络请求**: uni.request
+- **本地存储**: uni.getStorageSync / uni.setStorageSync
+
+### 后端技术栈
+- **语言**: PHP 7.x+
+- **数据库**: MySQL 5.7+
+- **数据库操作**: PDO
+- **Session管理**: PHP Session
+- **密码加密**: password_hash / password_verify
+
+### 开发工具
+- **前端**: HBuilderX
+- **后端**: 任意PHP编辑器
+- **数据库**: MySQL Workbench / phpMyAdmin
+
+---
+
+## 三、项目结构
+
+```
+DOO/
+├── admin-web/              # 后台管理系统
+│   ├── index.html         # 后台首页
+│   ├── login.html         # 后台登录页
+│   ├── script.js          # 后台JS逻辑
+│   └── style.css         # 后台样式
+│
+├── pages/                # App端页面
+│   ├── login/            # 登录/注册页面
+│   ├── tabbar/           # 底部导航页面
+│   │   ├── tabbar-1/     # 首页（推荐/关注）
+│   │   ├── tabbar-2/     # 用户列表/关注页面
+│   │   ├── tabbar-3/     # 消息页面
+│   │   ├── tabbar-4/     # 个人中心
+│   │   └── tabbar-5/     # 发布页面
+│   └── user-detail/      # 用户详情页
+│
+├── server/              # 后端服务
+│   ├── api/            # API接口
+│   │   ├── login.php          # 用户登录
+│   │   ├── register.php       # 用户注册
+│   │   ├── logout.php         # 用户登出
+│   │   ├── get_users.php      # 获取用户列表
+│   │   ├── get_videos.php     # 获取视频列表
+│   │   ├── get_carousels.php  # 获取轮播图
+│   │   ├── follow.php         # 关注/取消关注
+│   │   ├── messages.php       # 消息功能
+│   │   ├── admin_login.php    # 管理员登录
+│   │   ├── admin_logout.php   # 管理员登出
+│   │   ├── admin_videos.php   # 视频管理
+│   │   ├── admin_users.php    # 用户管理
+│   │   ├── admin_carousels.php # 轮播图管理
+│   │   ├── reset_admin.php    # 重置管理员密码
+│   │   └── check_admin_setup.php # 检查管理员设置
+│   ├── config/         # 配置文件
+│   │   └── Database.php      # 数据库连接类
+│   ├── sql/            # 数据库脚本
+│   │   ├── database.sql       # 数据库初始化
+│   │   └── follow_and_message.sql # 关注和消息表
+│   └── uploads/        # 上传文件目录
+│
+├── static/              # 静态资源
+│   ├── img/            # 图片资源
+│   └── logo.png        # Logo
+│
+├── App.vue            # App主组件
+├── main.js            # 入口文件
+├── manifest.json      # 应用配置
+└── pages.json         # 页面配置
+```
+
+---
+
+## 四、数据库设计
+
+### 核心表结构
+
+#### 1. users表 - 用户信息
+```sql
+CREATE TABLE `users` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `username` VARCHAR(50) NOT NULL UNIQUE COMMENT '用户名',
+    `password` VARCHAR(255) NOT NULL COMMENT '密码',
+    `nickname` VARCHAR(50) COMMENT '昵称',
+    `avatar` VARCHAR(255) COMMENT '头像URL',
+    `background_image` VARCHAR(255) COMMENT '背景图URL',
+    `role` ENUM('user', 'admin') DEFAULT 'user' COMMENT '角色',
+    `followers` INT DEFAULT 0 COMMENT '粉丝数',
+    `following` INT DEFAULT 0 COMMENT '关注数',
+    `likes` INT DEFAULT 0 COMMENT '获赞数',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+#### 2. videos表 - 视频信息
+```sql
+CREATE TABLE `videos` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT NOT NULL COMMENT '发布者ID',
+    `title` VARCHAR(255) NOT NULL COMMENT '视频标题',
+    `description` TEXT COMMENT '视频描述',
+    `video_url` VARCHAR(255) NOT NULL COMMENT '视频URL',
+    `cover_url` VARCHAR(255) COMMENT '封面URL',
+    `views` INT DEFAULT 0 COMMENT '播放量',
+    `likes` INT DEFAULT 0 COMMENT '点赞数',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+#### 3. carousels表 - 轮播图
+```sql
+CREATE TABLE `carousels` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `title` VARCHAR(255) NOT NULL COMMENT '标题',
+    `author` VARCHAR(50) COMMENT '作者',
+    `image_url` VARCHAR(255) NOT NULL COMMENT '图片URL',
+    `sort_order` INT DEFAULT 0 COMMENT '排序',
+    `is_active` TINYINT(1) DEFAULT 1 COMMENT '是否启用',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+#### 4. follows表 - 关注关系
+```sql
+CREATE TABLE `follows` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `follower_id` INT NOT NULL COMMENT '关注者ID',
+    `following_id` INT NOT NULL COMMENT '被关注者ID',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '关注时间',
+    UNIQUE KEY `unique_follow` (`follower_id`, `following_id`),
+    FOREIGN KEY (`follower_id`) REFERENCES `users`(`id`),
+    FOREIGN KEY (`following_id`) REFERENCES `users`(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+#### 5. messages表 - 消息
+```sql
+CREATE TABLE `messages` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `sender_id` INT NOT NULL COMMENT '发送者ID',
+    `receiver_id` INT NOT NULL COMMENT '接收者ID',
+    `content` TEXT NOT NULL COMMENT '消息内容',
+    `is_read` TINYINT(1) DEFAULT 0 COMMENT '是否已读',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '发送时间',
+    FOREIGN KEY (`sender_id`) REFERENCES `users`(`id`),
+    FOREIGN KEY (`receiver_id`) REFERENCES `users`(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+---
+
+## 五、功能模块
+
+### 1. 用户端功能
+
+#### 登录/注册模块
+- 用户注册
+- 用户登录
+- Session管理
+- 自动登录检测
+
+#### 首页模块 (tabbar-1)
+- 轮播图展示
+- 视频列表展示
+- 下拉刷新
+- 数据实时同步
+
+#### 用户列表模块 (tabbar-2)
+- 显示所有注册用户
+- 关注/取消关注
+- 查看已关注用户
+- 发送私信
+- 下拉刷新
+
+#### 消息模块 (tabbar-3)
+- 消息列表
+- 发送消息
+- 消息状态管理
+
+#### 个人中心模块 (tabbar-4)
+- 个人信息展示
+- 粉丝/关注/获赞统计
+- 个人设置
+
+#### 发布模块 (tabbar-5)
+- 发布视频
+- 发布动态
+- 内容编辑
+
+### 2. 后台管理功能
+
+#### 管理员登录
+- 管理员身份验证
+- Session管理
+- 安全登出
+
+#### 视频管理
+- 查看视频列表
+- 添加视频
+- 编辑视频
+- 删除视频
+
+#### 用户管理
+- 查看用户列表
+- 添加用户
+- 编辑用户
+- 删除用户
+- 角色管理
+
+#### 轮播图管理
+- 查看轮播图列表
+- 添加轮播图
+- 编辑轮播图
+- 删除轮播图
+- 排序管理
+- 启用/禁用
+
+---
+
+## 六、API接口文档
+
+### 用户相关API
+
+#### POST /api/login.php
+**功能**: 用户登录
+
+**请求参数**:
+```json
+{
+  "username": "用户名",
+  "password": "密码"
+}
+```
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "登录成功",
+  "data": {
+    "id": 1,
+    "username": "admin",
+    "nickname": "系统管理员",
+    "avatar": null,
+    "followers": 0,
+    "following": 0,
+    "likes": 0
+  }
+}
+```
+
+**Session**: 设置用户session
+
+---
+
+#### POST /api/register.php
+**功能**: 用户注册
+
+**请求参数**:
+```json
+{
+  "username": "用户名",
+  "password": "密码"
+}
+```
+
+**响应示例**:
+```json
+{
+  "code": 201,
+  "message": "注册成功"
+}
+```
+
+---
+
+#### GET /api/get_users.php
+**功能**: 获取用户列表
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "获取成功",
+  "data": [
+    {
+      "id": 1,
+      "username": "admin",
+      "nickname": "系统管理员",
+      "avatar": null,
+      "followers": 0,
+      "following": 0,
+      "likes": 0
+    }
+  ]
+}
+```
+
+---
+
+### 关注相关API
+
+#### GET /api/follow.php?action=following
+**功能**: 获取已关注列表
+
+**Session**: 必需
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "获取成功",
+  "data": [
+    {
+      "id": 2,
+      "username": "user2",
+      "nickname": "用户2",
+      "avatar": null,
+      "followers": 0,
+      "following": 0,
+      "likes": 0
+    }
+  ]
+}
+```
+
+---
+
+#### GET /api/follow.php?action=check&user_id=X
+**功能**: 检查是否已关注
+
+**Session**: 必需
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "获取成功",
+  "data": {
+    "is_following": true
+  }
+}
+```
+
+---
+
+#### POST /api/follow.php
+**功能**: 关注用户
+
+**Session**: 必需
+
+**请求参数**:
+```json
+{
+  "user_id": 2
+}
+```
+
+**响应示例**:
+```json
+{
+  "code": 201,
+  "message": "关注成功"
+}
+```
+
+---
+
+#### DELETE /api/follow.php?user_id=X
+**功能**: 取消关注
+
+**Session**: 必需
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "取消关注成功"
+}
+```
+
+---
+
+### 消息相关API
+
+#### GET /api/messages.php
+**功能**: 获取消息列表
+
+**Session**: 必需
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "获取成功",
+  "data": [
+    {
+      "id": 1,
+      "sender_id": 1,
+      "receiver_id": 2,
+      "content": "你好",
+      "is_read": 0,
+      "created_at": "2024-01-01 12:00:00",
+      "sender_name": "admin",
+      "sender_nickname": "系统管理员"
+    }
+  ]
+}
+```
+
+---
+
+#### POST /api/messages.php
+**功能**: 发送消息
+
+**Session**: 必需
+
+**请求参数**:
+```json
+{
+  "receiver_id": 2,
+  "content": "你好"
+}
+```
+
+**响应示例**:
+```json
+{
+  "code": 201,
+  "message": "发送成功"
+}
+```
+
+---
+
+#### PUT /api/messages.php?id=X
+**功能**: 标记消息已读
+
+**Session**: 必需
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "标记已读成功"
+}
+```
+
+---
+
+### 内容相关API
+
+#### GET /api/get_videos.php
+**功能**: 获取视频列表
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "获取成功",
+  "data": [
+    {
+      "id": 1,
+      "title": "测试视频",
+      "description": "测试描述",
+      "video_url": "http://example.com/video.mp4",
+      "cover": "http://example.com/cover.jpg",
+      "views": "100次播放",
+      "author": "admin"
+    }
+  ]
+}
+```
+
+---
+
+#### GET /api/get_carousels.php
+**功能**: 获取轮播图
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "获取成功",
+  "data": [
+    {
+      "id": 1,
+      "title": "热门推荐",
+      "author": "官方推荐",
+      "image": "http://example.com/banner.jpg",
+      "sort": 1
+    }
+  ]
+}
+```
+
+---
+
+### 管理员相关API
+
+#### POST /api/admin_login.php
+**功能**: 管理员登录
+
+**请求参数**:
+```json
+{
+  "username": "admin",
+  "password": "admin123"
+}
+```
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "登录成功",
+  "data": {
+    "id": 1,
+    "username": "admin",
+    "nickname": "系统管理员",
+    "role": "admin"
+  }
+}
+```
+
+**Session**: 设置管理员session
+
+---
+
+#### GET /api/admin_logout.php
+**功能**: 管理员登出
+
+**Session**: 清除session
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "登出成功"
+}
+```
+
+---
+
+#### GET /api/admin_videos.php
+**功能**: 获取视频列表
+
+**Session**: 必需（管理员）
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "获取成功",
+  "data": [
+    {
+      "id": 1,
+      "title": "测试视频",
+      "description": "测试描述",
+      "video_url": "http://example.com/video.mp4",
+      "cover_url": "http://example.com/cover.jpg",
+      "views": 100,
+      "likes": 0,
+      "created_at": "2024-01-01 12:00:00"
+    }
+  ]
+}
+```
+
+---
+
+#### POST /api/admin_videos.php
+**功能**: 添加视频
+
+**Session**: 必需（管理员）
+
+**请求参数**:
+```json
+{
+  "title": "视频标题",
+  "description": "视频描述",
+  "video_url": "http://example.com/video.mp4",
+  "cover_url": "http://example.com/cover.jpg"
+}
+```
+
+**响应示例**:
+```json
+{
+  "code": 201,
+  "message": "添加成功"
+}
+```
+
+---
+
+#### PUT /api/admin_videos.php
+**功能**: 更新视频
+
+**Session**: 必需（管理员）
+
+**请求参数**:
+```json
+{
+  "id": 1,
+  "title": "视频标题",
+  "description": "视频描述",
+  "video_url": "http://example.com/video.mp4",
+  "cover_url": "http://example.com/cover.jpg"
+}
+```
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "更新成功"
+}
+```
+
+---
+
+#### DELETE /api/admin_videos.php?id=X
+**功能**: 删除视频
+
+**Session**: 必需（管理员）
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "删除成功"
+}
+```
+
+---
+
+#### GET /api/admin_users.php
+**功能**: 获取用户列表
+
+**Session**: 必需（管理员）
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "获取成功",
+  "data": [
+    {
+      "id": 1,
+      "username": "admin",
+      "nickname": "系统管理员",
+      "role": "admin",
+      "followers": 0,
+      "following": 0,
+      "likes": 0,
+      "created_at": "2024-01-01 12:00:00"
+    }
+  ]
+}
+```
+
+---
+
+#### POST /api/admin_users.php
+**功能**: 添加用户
+
+**Session**: 必需（管理员）
+
+**请求参数**:
+```json
+{
+  "username": "newuser",
+  "password": "password123",
+  "nickname": "新用户",
+  "role": "user"
+}
+```
+
+**响应示例**:
+```json
+{
+  "code": 201,
+  "message": "添加成功"
+}
+```
+
+---
+
+#### PUT /api/admin_users.php
+**功能**: 更新用户
+
+**Session**: 必需（管理员）
+
+**请求参数**:
+```json
+{
+  "id": 1,
+  "username": "admin",
+  "nickname": "系统管理员",
+  "role": "admin"
+}
+```
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "更新成功"
+}
+```
+
+---
+
+#### DELETE /api/admin_users.php?id=X
+**功能**: 删除用户
+
+**Session**: 必需（管理员）
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "删除成功"
+}
+```
+
+---
+
+#### GET /api/admin_carousels.php
+**功能**: 获取轮播图列表
+
+**Session**: 必需（管理员）
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "获取成功",
+  "data": [
+    {
+      "id": 1,
+      "title": "热门推荐",
+      "author": "官方推荐",
+      "image_url": "http://example.com/banner.jpg",
+      "sort_order": 1,
+      "is_active": 1,
+      "created_at": "2024-01-01 12:00:00"
+    }
+  ]
+}
+```
+
+---
+
+#### POST /api/admin_carousels.php
+**功能**: 添加轮播图
+
+**Session**: 必需（管理员）
+
+**请求参数**:
+```json
+{
+  "title": "轮播图标题",
+  "author": "作者",
+  "image_url": "http://example.com/banner.jpg",
+  "sort_order": 1
+}
+```
+
+**响应示例**:
+```json
+{
+  "code": 201,
+  "message": "添加成功"
+}
+```
+
+---
+
+#### PUT /api/admin_carousels.php
+**功能**: 更新轮播图
+
+**Session**: 必需（管理员）
+
+**请求参数**:
+```json
+{
+  "id": 1,
+  "title": "轮播图标题",
+  "author": "作者",
+  "image_url": "http://example.com/banner.jpg",
+  "sort_order": 1,
+  "is_active": 1
+}
+```
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "更新成功"
+}
+```
+
+---
+
+#### DELETE /api/admin_carousels.php?id=X
+**功能**: 删除轮播图
+
+**Session**: 必需（管理员）
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "删除成功"
+}
+```
+
+---
+
+## 七、数据流程
+
+### 1. 用户登录流程
+```
+用户输入用户名密码
+    ↓
+前端发送POST请求到 /api/login.php
+    ↓
+后端验证用户名和密码
+    ↓
+验证成功，设置session
+    ↓
+返回用户信息
+    ↓
+前端存储用户信息到本地
+    ↓
+跳转到首页
+```
+
+### 2. 关注流程
+```
+用户点击关注按钮
+    ↓
+前端检查session是否存在
+    ↓
+发送POST请求到 /api/follow.php
+    ↓
+后端验证session
+    ↓
+检查是否已关注
+    ↓
+未关注则添加关注记录
+    ↓
+更新用户统计（粉丝数、关注数）
+    ↓
+返回成功
+    ↓
+前端更新UI状态
+```
+
+### 3. 数据同步流程
+```
+后台管理添加/删除内容
+    ↓
+数据库更新
+    ↓
+用户端下拉刷新
+    ↓
+前端请求最新数据
+    ↓
+后端返回最新数据
+    ↓
+前端更新UI
+```
+
+---
+
+## 八、安全机制
+
+### 1. 认证机制
+- **Session验证**: 所有需要登录的接口都验证session
+- **密码加密**: 使用password_hash加密存储
+- **密码验证**: 使用password_verify验证密码
+- **角色权限**: 管理员和普通用户权限分离
+
+### 2. 数据验证
+- **输入验证**: 检查必填字段
+- **SQL注入防护**: 使用PDO预处理语句
+- **XSS防护**: 输出时进行转义
+- **CSRF防护**: 使用session验证
+
+### 3. 错误处理
+- **统一响应格式**: `{code, message, data}`
+- **错误日志**: 记录到PHP错误日志
+- **友好提示**: 前端显示用户友好的错误信息
+
+---
+
+## 九、部署说明
+
+### 1. 环境要求
+- PHP 7.0+
+- MySQL 5.7+
+- Apache/Nginx服务器
+- 支持PHP的Web服务器
+
+### 2. 配置步骤
+1. 导入数据库脚本到MySQL
+2. 配置数据库连接信息
+3. 上传文件到服务器
+4. 配置Web服务器
+5. 设置文件权限
+
+### 3. 访问地址
+- **用户端**: http://your-domain.com/
+- **后台管理**: http://your-domain.com/admin-web/
+- **API接口**: http://your-domain.com/server/api/
+
+---
+
+## 十、已实现功能总结
+
+### ✅ 已完成功能
+1. 用户注册/登录系统
+2. 用户信息管理
+3. 视频展示和管理
+4. 轮播图展示和管理
+5. 用户关注/取消关注
+6. 私信消息功能
+7. 后台管理系统
+8. 数据实时同步
+9. 下拉刷新功能
+10. Session管理
+
+### 🔄 待完善功能
+1. 视频上传功能
+2. 图片上传功能
+3. 视频播放功能
+4. 点赞功能
+5. 评论功能
+6. 消息实时推送
+7. 用户资料编辑
+8. 搜索功能
+9. 分享功能
+10. 通知功能
+
+---
+
+## 十一、核心文件说明
+
+### 前端核心文件
+
+#### pages/login/login.vue
+- 功能: 用户登录/注册页面
+- 主要方法:
+  - `login()`: 用户登录
+  - `register()`: 用户注册
+  - `toggleMode()`: 切换登录/注册模式
+
+#### pages/tabbar/tabbar-1/tabbar-1.vue
+- 功能: 首页（推荐/关注）
+- 主要方法:
+  - `loadCarouselData()`: 加载轮播图数据
+  - `loadCardData()`: 加载视频数据
+  - `onRefresh()`: 下拉刷新
+
+#### pages/tabbar/tabbar-2/tabbar-2.vue
+- 功能: 用户列表/关注页面
+- 主要方法:
+  - `loadUserList()`: 加载用户列表
+  - `loadFollowingList()`: 加载关注列表
+  - `toggleFollow()`: 切换关注状态
+  - `follow()`: 关注用户
+  - `unfollow()`: 取消关注
+  - `sendMessage()`: 发送消息
+
+#### admin-web/script.js
+- 功能: 后台管理逻辑
+- 主要方法:
+  - `handleLogin()`: 管理员登录
+  - `loadData()`: 加载数据
+  - `handleEdit()`: 编辑项目
+  - `handleDelete()`: 删除项目
+  - `handleSave()`: 保存项目
+
+### 后端核心文件
+
+#### server/api/login.php
+- 功能: 用户登录API
+- 主要逻辑:
+  - 验证用户名和密码
+  - 设置session
+  - 返回用户信息
+
+#### server/api/follow.php
+- 功能: 关注/取消关注API
+- 主要逻辑:
+  - GET: 获取关注列表/检查关注状态
+  - POST: 关注用户
+  - DELETE: 取消关注
+  - 更新用户统计
+
+#### server/api/messages.php
+- 功能: 消息API
+- 主要逻辑:
+  - GET: 获取消息列表
+  - POST: 发送消息
+  - PUT: 标记消息已读
+
+#### server/api/admin_login.php
+- 功能: 管理员登录API
+- 主要逻辑:
+  - 验证管理员身份
+  - 设置session
+  - 返回管理员信息
+
+#### server/api/admin_videos.php
+- 功能: 视频管理API
+- 主要逻辑:
+  - GET: 获取视频列表
+  - POST: 添加视频
+  - PUT: 更新视频
+  - DELETE: 删除视频
+
+#### server/api/admin_users.php
+- 功能: 用户管理API
+- 主要逻辑:
+  - GET: 获取用户列表
+  - POST: 添加用户
+  - PUT: 更新用户
+  - DELETE: 删除用户
+
+#### server/api/admin_carousels.php
+- 功能: 轮播图管理API
+- 主要逻辑:
+  - GET: 获取轮播图列表
+  - POST: 添加轮播图
+  - PUT: 更新轮播图
+  - DELETE: 删除轮播图
+
+#### server/config/Database.php
+- 功能: 数据库连接类
+- 主要方法:
+  - `__construct()`: 构造函数
+  - `getConnection()`: 获取数据库连接
+
+---
+
+## 十二、注意事项
+
+### 1. 安全建议
+- 定期更新PHP和MySQL版本
+- 使用HTTPS协议
+- 定期备份数据库
+- 设置合理的session过期时间
+- 限制登录尝试次数
+
+### 2. 性能优化
+- 使用数据库索引
+- 启用查询缓存
+- 压缩静态资源
+- 使用CDN加速
+- 优化图片大小
+
+### 3. 扩展建议
+- 添加Redis缓存
+- 实现消息队列
+- 使用WebSocket实现实时通信
+- 添加日志系统
+- 实现API限流
+
+---
+
+## 十三、常见问题
+
+### Q1: 如何重置管理员密码？
+A: 访问 `/server/api/reset_admin.php` 即可重置管理员密码为 `admin123`
+
+### Q2: 如何检查数据库连接？
+A: 访问 `/server/api/check_admin_setup.php` 查看数据库连接状态
+
+### Q3: 如何添加新的API接口？
+A: 在 `server/api/` 目录下创建新的PHP文件，遵循现有的代码规范
+
+### Q4: 如何修改数据库配置？
+A: 编辑 `server/config/Database.php` 文件，修改数据库连接信息
+
+### Q5: 如何部署到生产环境？
+A: 参考第九章的部署说明，确保服务器环境满足要求
+
+---
+
+## 十四、版本历史
+
+### v1.0.0 (2024-01-20)
+- 初始版本发布
+- 实现用户注册/登录
+- 实现视频管理
+- 实现轮播图管理
+- 实现用户关注功能
+- 实现消息功能
+- 实现后台管理系统
+
+---
+
+## 十五、联系方式
+
+如有问题或建议，请联系开发团队。
+
+---
+
+**文档版本**: v1.0.0
+**最后更新**: 2024-01-20
+**维护者**: DOO开发团队
