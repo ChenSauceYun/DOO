@@ -1,0 +1,20 @@
+-- 创建数据库
+CREATE DATABASE IF NOT EXISTS doo_app DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+USE doo_app;
+
+-- 创建用户表
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE COMMENT '用户名',
+    password VARCHAR(255) NOT NULL COMMENT '密码（加密存储）',
+    nickname VARCHAR(50) DEFAULT NULL COMMENT '昵称',
+    avatar VARCHAR(255) DEFAULT NULL COMMENT '头像URL',
+    background_image VARCHAR(255) DEFAULT NULL COMMENT '背景图片URL',
+    followers INT DEFAULT 0 COMMENT '粉丝数',
+    following INT DEFAULT 0 COMMENT '关注数',
+    likes INT DEFAULT 0 COMMENT '获赞数',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    INDEX idx_username (username)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户表';

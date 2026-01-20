@@ -1,0 +1,350 @@
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.content[data-v-4fdee20d] {
+  padding: 0;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+.status-bar[data-v-4fdee20d] {
+  width: 100%;
+  background-color: transparent;
+}
+.background-banner[data-v-4fdee20d] {
+  width: 100%;
+  height: 14.0625rem;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+.banner-overlay[data-v-4fdee20d] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 100%);
+}
+.user-card[data-v-4fdee20d] {
+  background-color: #ffffff;
+  border-radius: 0.625rem;
+  padding: 1.25rem 0.9375rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.08);
+  margin: -2.5rem 0.9375rem 0.625rem 0.9375rem;
+  position: relative;
+  z-index: 2;
+}
+.avatar-wrapper[data-v-4fdee20d] {
+  margin-right: 0.9375rem;
+}
+.avatar[data-v-4fdee20d] {
+  width: 3.75rem;
+  height: 3.75rem;
+  border-radius: 50%;
+  border: 0.125rem solid #ffffff;
+  box-shadow: 0 0.125rem 0.375rem rgba(0, 0, 0, 0.15);
+}
+.user-info[data-v-4fdee20d] {
+  flex: 1;
+  margin-right: 0.625rem;
+}
+.nickname[data-v-4fdee20d] {
+  font-size: 1.125rem;
+  font-weight: bold;
+  color: #333333;
+  display: block;
+  margin-bottom: 0.46875rem;
+}
+.user-stats[data-v-4fdee20d] {
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem;
+  color: #999999;
+}
+.stat-item[data-v-4fdee20d] {
+  margin: 0 0.25rem;
+}
+.stat-divider[data-v-4fdee20d] {
+  margin: 0 0.25rem;
+  color: #e0e0e0;
+}
+.button-group[data-v-4fdee20d] {
+  display: flex;
+  gap: 0.625rem;
+}
+.btn[data-v-4fdee20d] {
+  padding: 0 0.9375rem;
+  height: 2.1875rem;
+  line-height: 2.1875rem;
+  border-radius: 1.09375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: none;
+  margin: 0;
+}
+.btn-login[data-v-4fdee20d] {
+  background: linear-gradient(135deg, #f33e54 0%, #ff6b6b 100%);
+  color: #ffffff;
+}
+.btn-register[data-v-4fdee20d] {
+  background: #ffffff;
+  color: #f33e54;
+  border: 0.0625rem solid #f33e54;
+}
+.edit-btn[data-v-4fdee20d] {
+  padding: 0 0.9375rem;
+  height: 2.1875rem;
+  line-height: 2.1875rem;
+  border-radius: 1.09375rem;
+  border: 0.0625rem solid #f33e54;
+  background: #ffffff;
+}
+.edit-text[data-v-4fdee20d] {
+  font-size: 0.875rem;
+  color: #f33e54;
+  font-weight: 500;
+}
+.menu-list[data-v-4fdee20d] {
+  background-color: #ffffff;
+  border-radius: 0.625rem;
+  overflow: hidden;
+  box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.08);
+}
+.menu-item[data-v-4fdee20d] {
+  display: flex;
+  align-items: center;
+  padding: 1.09375rem 0.9375rem;
+  border-bottom: 0.03125rem solid #f0f0f0;
+  position: relative;
+}
+.menu-item[data-v-4fdee20d]:last-child {
+  border-bottom: none;
+}
+.menu-icon[data-v-4fdee20d] {
+  width: 1.5625rem;
+  height: 1.5625rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.625rem;
+}
+.icon-text[data-v-4fdee20d] {
+  font-size: 1.125rem;
+}
+.menu-text[data-v-4fdee20d] {
+  flex: 1;
+  font-size: 0.9375rem;
+  color: #333333;
+}
+.menu-arrow[data-v-4fdee20d] {
+  font-size: 1.25rem;
+  color: #cccccc;
+  font-weight: 300;
+}
+.password-modal[data-v-4fdee20d] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 0.625rem;
+  box-sizing: border-box;
+}
+.modal-content[data-v-4fdee20d] {
+  background-color: #ffffff;
+  border-radius: 0.625rem;
+  padding: 1.25rem;
+  width: 85%;
+  max-width: 20.3125rem;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+.modal-header[data-v-4fdee20d] {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.9375rem;
+}
+.modal-title[data-v-4fdee20d] {
+  font-size: 1.125rem;
+  font-weight: bold;
+  color: #333333;
+}
+.modal-close[data-v-4fdee20d] {
+  font-size: 1.25rem;
+  color: #999999;
+  cursor: pointer;
+}
+.modal-body[data-v-4fdee20d] {
+  margin-bottom: 0.9375rem;
+}
+.form-item[data-v-4fdee20d] {
+  margin-bottom: 0.78125rem;
+}
+.label[data-v-4fdee20d] {
+  font-size: 0.875rem;
+  color: #333333;
+  display: block;
+  margin-bottom: 0.375rem;
+  font-weight: 500;
+}
+.input[data-v-4fdee20d] {
+  width: 100%;
+  height: 2.5rem;
+  border: 0.0625rem solid #e0e0e0;
+  border-radius: 0.3125rem;
+  padding: 0 2.5rem 0 0.625rem;
+  font-size: 0.875rem;
+  box-sizing: border-box;
+  background-color: #ffffff;
+}
+.input[data-v-4fdee20d]:focus {
+  border-color: #f33e54;
+  outline: none;
+}
+.modal-footer[data-v-4fdee20d] {
+  display: flex;
+  gap: 0.625rem;
+}
+.btn-cancel[data-v-4fdee20d] {
+  flex: 1;
+  height: 2.5rem;
+  line-height: 2.5rem;
+  background: #f0f0f0;
+  color: #333333;
+  border-radius: 1.25rem;
+  font-size: 0.875rem;
+  border: none;
+}
+.btn-confirm[data-v-4fdee20d] {
+  flex: 1;
+  height: 2.5rem;
+  line-height: 2.5rem;
+  background: linear-gradient(135deg, #f33e54 0%, #ff6b6b 100%);
+  color: #ffffff;
+  border-radius: 1.25rem;
+  font-size: 0.875rem;
+  font-weight: bold;
+  border: none;
+}
+.btn-confirm[data-v-4fdee20d]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.input-wrapper[data-v-4fdee20d] {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+.toggle-password[data-v-4fdee20d] {
+  position: absolute;
+  right: 0.625rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.875rem;
+  color: #999999;
+  cursor: pointer;
+  -webkit-user-select: none;
+          user-select: none;
+  padding: 0.3125rem;
+}
+.password-strength[data-v-4fdee20d] {
+  display: flex;
+  align-items: center;
+  margin-top: 0.46875rem;
+  padding: 0.46875rem;
+  background-color: #f8f9fa;
+  border-radius: 0.3125rem;
+}
+.strength-label[data-v-4fdee20d] {
+  font-size: 0.75rem;
+  color: #666666;
+  margin-right: 0.46875rem;
+}
+.strength-bar[data-v-4fdee20d] {
+  flex: 1;
+  height: 0.1875rem;
+  background-color: #e0e0e0;
+  border-radius: 0.09375rem;
+  overflow: hidden;
+}
+.strength-fill[data-v-4fdee20d] {
+  height: 100%;
+  width: 0;
+  transition: width 0.3s ease;
+}
+.strength-fill.weak[data-v-4fdee20d] {
+  width: 33%;
+  background-color: #ff4757;
+}
+.strength-fill.medium[data-v-4fdee20d] {
+  width: 66%;
+  background-color: #ffa502;
+}
+.strength-fill.strong[data-v-4fdee20d] {
+  width: 100%;
+  background-color: #2ed573;
+}
+.strength-text[data-v-4fdee20d] {
+  font-size: 0.75rem;
+  margin-left: 0.3125rem;
+}
+.strength-text.weak[data-v-4fdee20d] {
+  color: #ff4757;
+}
+.strength-text.medium[data-v-4fdee20d] {
+  color: #ffa502;
+}
+.strength-text.strong[data-v-4fdee20d] {
+  color: #2ed573;
+}
+.match-hint[data-v-4fdee20d] {
+  display: flex;
+  align-items: center;
+  margin-top: 0.3125rem;
+  padding: 0.3125rem 0.46875rem;
+  border-radius: 0.25rem;
+}
+.match-success[data-v-4fdee20d] {
+  color: #2ed573;
+  background-color: #d4edda;
+  font-size: 0.75rem;
+}
+.match-error[data-v-4fdee20d] {
+  color: #ff4757;
+  background-color: #ffeaea;
+  font-size: 0.75rem;
+}

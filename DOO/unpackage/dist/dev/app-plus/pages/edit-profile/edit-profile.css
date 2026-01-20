@@ -1,0 +1,259 @@
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.content[data-v-c0f45e44] {
+  padding: 0;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+.status-bar[data-v-c0f45e44] {
+  width: 100%;
+  background-color: #ffffff;
+}
+.header[data-v-c0f45e44] {
+  background-color: #ffffff;
+  box-shadow: 0 0.0625rem 0.3125rem rgba(0, 0, 0, 0.05);
+}
+.nav-bar[data-v-c0f45e44] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 2.75rem;
+  padding: 0 0.9375rem;
+  position: relative;
+}
+.nav-back[data-v-c0f45e44] {
+  font-size: 1.25rem;
+  color: #333333;
+  font-weight: 500;
+  width: 1.875rem;
+}
+.nav-title[data-v-c0f45e44] {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.125rem;
+  font-weight: bold;
+  color: #333333;
+  white-space: nowrap;
+}
+.nav-save[data-v-c0f45e44] {
+  font-size: 1rem;
+  color: #f33e54;
+  font-weight: 500;
+  padding: 0.3125rem 0.625rem;
+  border: 0.03125rem solid #f33e54;
+  border-radius: 0.625rem;
+}
+.profile-section[data-v-c0f45e44] {
+  padding: 0.625rem;
+}
+.avatar-section[data-v-c0f45e44] {
+  background-color: #ffffff;
+  border-radius: 0.625rem;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 0.625rem;
+  box-shadow: 0 0.0625rem 0.3125rem rgba(0, 0, 0, 0.05);
+}
+.avatar[data-v-c0f45e44] {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  border: 0.125rem solid #ffffff;
+  box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.15);
+  margin-bottom: 0.625rem;
+}
+.avatar-edit[data-v-c0f45e44] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.46875rem 0.9375rem;
+  background: linear-gradient(135deg, #f33e54 0%, #ff6b6b 100%);
+  border-radius: 1.25rem;
+}
+.edit-icon[data-v-c0f45e44] {
+  font-size: 1.125rem;
+  margin-bottom: 0.15625rem;
+}
+.edit-text[data-v-c0f45e44] {
+  font-size: 0.75rem;
+  color: #ffffff;
+}
+.form-section[data-v-c0f45e44] {
+  background-color: #ffffff;
+  border-radius: 0.625rem;
+  padding: 0 0.9375rem;
+  box-shadow: 0 0.0625rem 0.3125rem rgba(0, 0, 0, 0.05);
+}
+.form-item[data-v-c0f45e44] {
+  display: flex;
+  align-items: center;
+  padding: 1.09375rem 0;
+  border-bottom: 0.03125rem solid #f0f0f0;
+  position: relative;
+}
+.form-item[data-v-c0f45e44]:last-child {
+  border-bottom: none;
+}
+.label[data-v-c0f45e44] {
+  width: 4.6875rem;
+  font-size: 0.9375rem;
+  color: #333333;
+  font-weight: 500;
+}
+.input[data-v-c0f45e44] {
+  flex: 1;
+  height: 2.5rem;
+  font-size: 0.9375rem;
+  color: #333333;
+  padding: 0 0.625rem;
+}
+.count[data-v-c0f45e44] {
+  position: absolute;
+  right: 0;
+  font-size: 0.75rem;
+  color: #999999;
+}
+.gender-options[data-v-c0f45e44] {
+  flex: 1;
+  display: flex;
+  gap: 0.625rem;
+}
+.gender-option[data-v-c0f45e44] {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem;
+  border: 0.0625rem solid #e0e0e0;
+  border-radius: 0.3125rem;
+}
+.gender-option.active[data-v-c0f45e44] {
+  border-color: #f33e54;
+  background-color: #fff5f5;
+}
+.gender-icon[data-v-c0f45e44] {
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+}
+.gender-text[data-v-c0f45e44] {
+  font-size: 0.8125rem;
+  color: #666666;
+}
+.gender-option.active .gender-text[data-v-c0f45e44] {
+  color: #f33e54;
+  font-weight: 500;
+}
+.picker[data-v-c0f45e44] {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 2.5rem;
+}
+.picker-text[data-v-c0f45e44] {
+  font-size: 0.9375rem;
+  color: #333333;
+}
+.picker-arrow[data-v-c0f45e44] {
+  font-size: 1.25rem;
+  color: #cccccc;
+}
+.textarea-item[data-v-c0f45e44] {
+  flex-direction: column;
+  align-items: flex-start;
+  padding-top: 1.09375rem;
+}
+.textarea[data-v-c0f45e44] {
+  width: 100%;
+  min-height: 4.6875rem;
+  font-size: 0.9375rem;
+  color: #333333;
+  padding: 0.625rem;
+  background-color: #f8f9fa;
+  border-radius: 0.3125rem;
+  margin-bottom: 0.3125rem;
+}
+.upload-modal[data-v-c0f45e44] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 0.625rem;
+}
+.modal-content[data-v-c0f45e44] {
+  background-color: #ffffff;
+  border-radius: 0.625rem;
+  padding: 1.25rem;
+  width: 85%;
+  max-width: 15.625rem;
+}
+.modal-header[data-v-c0f45e44] {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.9375rem;
+}
+.modal-title[data-v-c0f45e44] {
+  font-size: 1.125rem;
+  font-weight: bold;
+  color: #333333;
+}
+.modal-close[data-v-c0f45e44] {
+  font-size: 1.25rem;
+  color: #999999;
+  cursor: pointer;
+}
+.modal-body[data-v-c0f45e44] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+.upload-option[data-v-c0f45e44] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.9375rem;
+  background-color: #f8f9fa;
+  border-radius: 0.46875rem;
+}
+.upload-icon[data-v-c0f45e44] {
+  font-size: 1.5625rem;
+  margin-bottom: 0.3125rem;
+}
+.upload-text[data-v-c0f45e44] {
+  font-size: 0.875rem;
+  color: #333333;
+}
